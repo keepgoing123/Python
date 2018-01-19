@@ -30,6 +30,7 @@ for n in range(21,26):
     time.sleep(1)
     
 remote_connection.send("end\n")
+remote_connection.send("exit\n")
 time.sleep(1)
 output = remote_connection.recv(65535)
 print output
