@@ -9,11 +9,14 @@ from netmiko.ssh_exception import AuthenticationException
 username = raw_input('Enter your SSH username: ')
 password = getpass()
 
+with open('commands_file_switch') as f:
+    commands_list_switch = f.read().splitlines()
+with open('commands_file_router') as f:
+    commands_list_router = f.read().splitlines()
 with open('commands_file') as f:
     commands_list = f.read().splitlines()
-
-with open('devices_file') as f:
-    devices_list = f.read().splitlines()
+#with open('devices_file') as f:
+#    devices_list = f.read().splitlines()
 
 for devices in devices_list:
     print 'Connecting to device ' + devices 
@@ -24,7 +27,6 @@ for devices in devices_list:
         'username': username, 
         'password': password,
     }
-
     try:
         net_connect = ConnectHandler(**ios_device)
     except (AuthenticationException):
@@ -43,5 +45,25 @@ for devices in devices_list:
         print 'Some other error: ' + unknown_error
         continue
 
-    output = net_connect.send_config_set(commands_list)
+#    output = net_connect.send_config_set(commands_list)
+#    print output
+
+    list_versions = ['I86BI_LINUXL2-ADVENTERPRISEK9-M', 'C3725-ADVENTERPRISEK9-M']
+    for software_ver in list_versions:
+        print 'Checking for ' + software_ver
+        output_version = net_connect.send_command('show version')
+        int_version = 0 # Reset integer value
+        int_version = output_version.find(software_ver) # Check software version
+        if int_version > 0:
+            print 'Software version found: ' +software_ver
+            break
+        else:
+            print 'Did not find ' + software_ver
+    if software_ver == 'I86BI_LINUXL2-ADVENTERPRISEK9-M':
+        print 'Running ' + software_ver + ' commands'
+        output = net_connect.send_config_set(commands_list_switch)
+    elif software_ver == 'C3725-ADVENTERPRISEK9-M':
+        print 'Running ' + software_ver + ' commands'
+        output = net_connect.send_config_set(commands_list_router)
     print output
+
