@@ -1,0 +1,5 @@
+ip name-server 8.8.8.8
+ip domain-lookup
+no username test
+router eigrp 1
+network 0.0.0.0
