@@ -15,8 +15,8 @@ with open('commands_file_router') as f:
     commands_list_router = f.read().splitlines()
 with open('commands_file') as f:
     commands_list = f.read().splitlines()
-#with open('devices_file') as f:
-#    devices_list = f.read().splitlines()
+with open('devices_file') as f:
+    devices_list = f.read().splitlines()
 
 for devices in devices_list:
     print 'Connecting to device ' + devices 
